@@ -3,13 +3,12 @@
 	"id": "client_execution",
 	"version": "${version}",
 	"name": "Client Execution",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Run Client-Side only commands from the server!",
 	"authors": [
-		"Me!"
+		"Nettakrim"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/Nettakrim/Client-Execution"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/client_execution/icon.png",
