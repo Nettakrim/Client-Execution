@@ -1,7 +1,6 @@
 package com.nettakrim.client_execution;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 public class ClientExecutionNetwork {
@@ -10,7 +9,7 @@ public class ClientExecutionNetwork {
             String command = buf.readString();
 
             // could also use ClientCommandInternals.executeCommand() to directly execute a client command
-            // but this way it can do both
+            // but this way it can do both (and doing so would break connector)
             ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
             if (networkHandler != null) {
                 client.execute(() -> networkHandler.sendChatCommand(command));
