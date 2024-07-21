@@ -11,6 +11,7 @@ public class ClientExecution implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		CommandPayload.register();
 		Commands.init();
 	}
 }
