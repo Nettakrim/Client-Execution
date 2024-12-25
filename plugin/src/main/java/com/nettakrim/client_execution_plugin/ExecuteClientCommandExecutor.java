@@ -34,7 +34,6 @@ public class ExecuteClientCommandExecutor implements CommandExecutor {
                 }
                 plugin.sendClientExecution(player, s.toString());
             }
-            plugin.getLogger().info(commandSender+" "+command+" "+Arrays.toString(args));
         }
 
         return true;
