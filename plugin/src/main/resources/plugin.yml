@@ -1,0 +1,10 @@
+name: client_execution
+version: '1.0-SNAPSHOT'
+main: com.nettakrim.client_execution_plugin.ClientExecution
+description: Plugin version of Client Execution (https://modrinth.com/mod/client-execution)
+api-version: '1.21'
+commands:
+  executeclient:
+    description: "https://modrinth.com/mod/client-execution"
+    usage: "/executeclient"
+    permission: client_execution.executeclient
