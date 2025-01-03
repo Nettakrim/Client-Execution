@@ -6,8 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
 public class ExecuteClientCommandExecutor implements CommandExecutor {
     public ClientExecution plugin;
 
@@ -25,14 +23,24 @@ public class ExecuteClientCommandExecutor implements CommandExecutor {
 
             String playerName = args[0];
 
-            Player player = commandSender.getServer().getPlayer(playerName);
-            if (player != null) {
-                StringBuilder s = new StringBuilder();
-                for (int i = 1; i < args.length; i++) {
-                    if (i > 1) s.append(' ');
-                    s.append(args[i]);
+            Player[] players;
+            if (playerName.startsWith("@")) {
+                players = commandSender.getServer().getOnlinePlayers().toArray(new Player[0]);
+            } else {
+                players = new Player[] {commandSender.getServer().getPlayer(playerName)};
+            }
+
+            StringBuilder s = new StringBuilder();
+            for (int i = 1; i < args.length; i++) {
+                if (i > 1) s.append(' ');
+                s.append(args[i]);
+            }
+            String commandString = s.toString();
+
+            for (Player player : players) {
+                if (player != null) {
+                    plugin.sendClientExecution(player, commandString);
                 }
-                plugin.sendClientExecution(player, s.toString());
             }
         }
 
