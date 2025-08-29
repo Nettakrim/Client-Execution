@@ -1,17 +1,18 @@
-package com.nettakrim.client_execution;
+package com.nettakrim.client_execution.payloads;
 
+import com.nettakrim.client_execution.ExecutionNetwork;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 
-public record CommandPayload(String string) implements CustomPayload {
-    public static final CustomPayload.Id<CommandPayload> PACKET_ID = new CustomPayload.Id<>(ExecutionNetwork.executeClient);
-    public static final PacketCodec<RegistryByteBuf, CommandPayload> PACKET_CODEC = PacketCodec.tuple(
+public record UnlockPayload(String command) implements CustomPayload {
+    public static final Id<UnlockPayload> PACKET_ID = new Id<>(ExecutionNetwork.unlockCommand);
+    public static final PacketCodec<RegistryByteBuf, UnlockPayload> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.STRING,
-            CommandPayload::string,
-            CommandPayload::new
+            UnlockPayload::command,
+            UnlockPayload::new
     );
 
     @Override

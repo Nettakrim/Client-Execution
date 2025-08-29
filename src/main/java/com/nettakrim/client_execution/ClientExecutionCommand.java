@@ -12,17 +12,22 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Iterator;
+import java.util.function.BiConsumer;
 
-public class ExecuteClientCommand implements Command<ServerCommandSource> {
-    public static void registerNode(RootCommandNode<ServerCommandSource> root) {
+public class ClientExecutionCommand implements Command<ServerCommandSource> {
+    private final BiConsumer<ServerPlayerEntity, String> onRun;
+
+    public ClientExecutionCommand(RootCommandNode<ServerCommandSource> root, String name, BiConsumer<ServerPlayerEntity, String> onRun) {
+        this.onRun = onRun;
+
         LiteralCommandNode<ServerCommandSource> clientExecutionNode = CommandManager
-                .literal("executeclient")
+                .literal(name)
                 .requires((source) -> source.hasPermissionLevel(2))
                 .then(
                         CommandManager.argument("targets", EntityArgumentType.players())
                                 .then(
                                         CommandManager.argument("command", MessageArgumentType.message())
-                                                .executes(new ExecuteClientCommand())
+                                                .executes(this)
                                 )
                 )
                 .build();
@@ -38,7 +43,7 @@ public class ExecuteClientCommand implements Command<ServerCommandSource> {
 
         for(Iterator<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "targets").iterator(); targets.hasNext(); ++i) {
             ServerPlayerEntity player = targets.next();
-            ExecutionNetwork.onExecuteClient(player, command);
+            onRun.accept(player, command);
         }
 
         return i;

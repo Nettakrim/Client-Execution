@@ -9,7 +9,9 @@ public class Commands {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             RootCommandNode<ServerCommandSource> root = dispatcher.getRoot();
 
-            ExecuteClientCommand.registerNode(root);
+            new ClientExecutionCommand(root, "executeclient", ExecutionNetwork::onExecuteClient);
+            new ClientExecutionCommand(root, "commandlock", ExecutionNetwork::onLockCommand);
+            new ClientExecutionCommand(root, "commandunlock", ExecutionNetwork::onUnlockCommand);
         });
     }
 }

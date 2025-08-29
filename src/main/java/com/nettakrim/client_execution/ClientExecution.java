@@ -1,5 +1,8 @@
 package com.nettakrim.client_execution;
 
+import com.nettakrim.client_execution.payloads.CommandPayload;
+import com.nettakrim.client_execution.payloads.LockPayload;
+import com.nettakrim.client_execution.payloads.UnlockPayload;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -12,6 +15,9 @@ public class ClientExecution implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CommandPayload.register();
+		LockPayload.register();
+		UnlockPayload.register();
+
 		Commands.init();
 	}
 }
