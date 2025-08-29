@@ -1,5 +1,5 @@
 name: client_execution
-version: '1.1'
+version: '1.2'
 main: com.nettakrim.client_execution_plugin.ClientExecution
 description: Plugin version of Client Execution (https://modrinth.com/mod/client-execution)
 api-version: '1.21'
