@@ -8,3 +8,11 @@ commands:
     description: "runs client-side commands"
     usage: "/executeclient <player> <command>"
     permission: client_execution.executeclient
+  commandlock:
+    description: "stops players being able to run commands themselves. the commands still work with /executeclient"
+    usage: "/commandlock <player> <command>"
+    permission: client_execution.commandlock
+  commandunlock:
+    description: "unlocks commands locked by /commandlock"
+    usage: "/commandunlock <player> <command>"
+    permission: client_execution.commandunlock

@@ -6,16 +6,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ExecuteClientCommandExecutor implements CommandExecutor {
-    public ClientExecution plugin;
+import java.util.function.BiConsumer;
 
-    public ExecuteClientCommandExecutor(ClientExecution plugin) {
-        this.plugin = plugin;
-    }
-
+public record ClientExecutionCommandExecutor(String name, BiConsumer<Player, String> onRun) implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (command.getLabel().equalsIgnoreCase("executeclient")) {
+        if (command.getLabel().equalsIgnoreCase(name)) {
             if (args.length < 2) {
                 commandSender.sendMessage("not enough arguments! /executeclient <player> <command>");
                 return false;
@@ -27,7 +23,7 @@ public class ExecuteClientCommandExecutor implements CommandExecutor {
             if (playerName.startsWith("@")) {
                 players = commandSender.getServer().getOnlinePlayers().toArray(new Player[0]);
             } else {
-                players = new Player[] {commandSender.getServer().getPlayer(playerName)};
+                players = new Player[]{commandSender.getServer().getPlayer(playerName)};
             }
 
             StringBuilder s = new StringBuilder();
@@ -39,7 +35,7 @@ public class ExecuteClientCommandExecutor implements CommandExecutor {
 
             for (Player player : players) {
                 if (player != null) {
-                    plugin.sendClientExecution(player, commandString);
+                    onRun.accept(player, commandString);
                 }
             }
         }

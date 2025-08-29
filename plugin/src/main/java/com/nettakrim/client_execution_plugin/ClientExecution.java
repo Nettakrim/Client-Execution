@@ -1,6 +1,5 @@
 package com.nettakrim.client_execution_plugin;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.charset.StandardCharsets;
@@ -11,14 +10,14 @@ public final class ClientExecution extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getCommand("executeclient").setExecutor(new ExecuteClientCommandExecutor(this));
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "client_execution:execute_client");
+        register("executeclient", "client_execution:execute_client");
+        register("commandlock", "client_execution:lock_command");
+        register("commandunlock", "client_execution:unlock_command");
     }
 
-    public void sendClientExecution(Player player, String command) {
-        byte[] packetBuf = getStringBuf(command);
-
-        player.sendPluginMessage(this, "client_execution:execute_client", packetBuf);
+    private void register(String name, String packet) {
+        getCommand(name).setExecutor(new ClientExecutionCommandExecutor(name, (player, command) -> player.sendPluginMessage(this, packet, getStringBuf(command))));
+        getServer().getMessenger().registerOutgoingPluginChannel(this, packet);
     }
 
     private byte[] getStringBuf(String s) {
