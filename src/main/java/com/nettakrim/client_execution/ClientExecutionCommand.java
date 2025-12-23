@@ -22,7 +22,7 @@ public class ClientExecutionCommand implements Command<ServerCommandSource> {
 
         LiteralCommandNode<ServerCommandSource> clientExecutionNode = CommandManager
                 .literal(name)
-                .requires((source) -> source.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .then(
                         CommandManager.argument("targets", EntityArgumentType.players())
                                 .then(
