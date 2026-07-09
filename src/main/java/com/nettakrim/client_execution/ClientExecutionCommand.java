@@ -5,28 +5,27 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.command.argument.MessageArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Iterator;
 import java.util.function.BiConsumer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.MessageArgument;
+import net.minecraft.server.level.ServerPlayer;
 
-public class ClientExecutionCommand implements Command<ServerCommandSource> {
-    private final BiConsumer<ServerPlayerEntity, String> onRun;
+public class ClientExecutionCommand implements Command<CommandSourceStack> {
+    private final BiConsumer<ServerPlayer, String> onRun;
 
-    public ClientExecutionCommand(RootCommandNode<ServerCommandSource> root, String name, BiConsumer<ServerPlayerEntity, String> onRun) {
+    public ClientExecutionCommand(RootCommandNode<CommandSourceStack> root, String name, BiConsumer<ServerPlayer, String> onRun) {
         this.onRun = onRun;
 
-        LiteralCommandNode<ServerCommandSource> clientExecutionNode = CommandManager
+        LiteralCommandNode<CommandSourceStack> clientExecutionNode = Commands
                 .literal(name)
-                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
-                        CommandManager.argument("targets", EntityArgumentType.players())
+                        Commands.argument("targets", EntityArgument.players())
                                 .then(
-                                        CommandManager.argument("command", MessageArgumentType.message())
+                                        Commands.argument("command", MessageArgument.message())
                                                 .executes(this)
                                 )
                 )
@@ -36,13 +35,13 @@ public class ClientExecutionCommand implements Command<ServerCommandSource> {
     }
 
     @Override
-    public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        String command = MessageArgumentType.getMessage(context, "command").getString();
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        String command = MessageArgument.getMessage(context, "command").getString();
 
         int i = 0;
 
-        for(Iterator<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(context, "targets").iterator(); targets.hasNext(); ++i) {
-            ServerPlayerEntity player = targets.next();
+        for(Iterator<ServerPlayer> targets = EntityArgument.getPlayers(context, "targets").iterator(); targets.hasNext(); ++i) {
+            ServerPlayer player = targets.next();
             onRun.accept(player, command);
         }
 

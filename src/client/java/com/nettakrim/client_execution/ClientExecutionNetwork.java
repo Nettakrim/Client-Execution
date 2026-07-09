@@ -4,21 +4,18 @@ import com.nettakrim.client_execution.payloads.CommandPayload;
 import com.nettakrim.client_execution.payloads.LockPayload;
 import com.nettakrim.client_execution.payloads.UnlockPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
 public class ClientExecutionNetwork {
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(CommandPayload.PACKET_ID, (payload, context) -> {
-            if (context.client() == null) {
-                return;
-            }
             String command = payload.command();
 
             // could also use ClientCommandInternals.executeCommand() to directly execute a client command
             // but this way it can do both (and doing so would break connector)
-            ClientPlayNetworkHandler networkHandler = context.client().getNetworkHandler();
+            ClientPacketListener networkHandler = context.client().getConnection();
             if (networkHandler != null) {
-                context.client().execute(() -> networkHandler.sendChatCommand(command));
+                context.client().execute(() -> networkHandler.sendCommand(command));
             }
         });
 

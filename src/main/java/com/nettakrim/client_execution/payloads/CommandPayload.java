@@ -2,25 +2,26 @@ package com.nettakrim.client_execution.payloads;
 
 import com.nettakrim.client_execution.ExecutionNetwork;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import org.jspecify.annotations.NonNull;
 
-public record CommandPayload(String command) implements CustomPayload {
-    public static final CustomPayload.Id<CommandPayload> PACKET_ID = new CustomPayload.Id<>(ExecutionNetwork.executeClient);
-    public static final PacketCodec<RegistryByteBuf, CommandPayload> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.STRING,
+public record CommandPayload(String command) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<CommandPayload> PACKET_ID = new CustomPacketPayload.Type<>(ExecutionNetwork.executeClient);
+    public static final StreamCodec<RegistryFriendlyByteBuf, CommandPayload> PACKET_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
             CommandPayload::command,
             CommandPayload::new
     );
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public @NonNull Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 
     public static void register() {
-        PayloadTypeRegistry.playS2C().register(PACKET_ID, PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(PACKET_ID, PACKET_CODEC);
     }
 }
